@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 pytest
+
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Test imports
+        run: |
+          python -c "import config; import dataset; import data_loader; import tokenizer_utils; import trainer; import train; from model_architecture import Transformer"
+
+      - name: Run basic training test
+        run: |
+          python -c "
+          import torch
+          from src.transformer_mt.config import get_config
+          from src.transformer_mt.model_architecture import Transformer
+          config = get_config()
+          model = Transformer(
+              src_vocab_size=1000,
+              tgt_vocab_size=1000,
+              src_max_len=config['seq_len'],
+              tgt_max_len=config['seq_len'],
+              d_model=config['d_model']
+          )
+          src = torch.randint(0, 1000, (1, 10))
+          tgt = torch.randint(0, 1000, (1, 10))
+          output = model(src, tgt)
+          print('Model forward pass successful')
+          "
