@@ -106,14 +106,6 @@ Transformer_Translation/
 3. **Training**: The `trainer.py` class manages the training loop, loss computation (Cross-Entropy with label smoothing), backpropagation, and validation.
 4. **Tokenization**: Special tokens like [SOS], [EOS], [PAD], and [UNK] are used for sequence handling.
 
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements, bug fixes, or new features.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
 ## Acknowledgments
 
 - Based on the Transformer architecture from "Attention is All You Need" (Vaswani et al., 2017).
